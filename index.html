@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARGS School POS</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 3D animated background -->
+<div class="bg-blobs"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card" id="loginCard">
+    <div class="login-logo">🏫</div>
+    <h1 class="school-3d">ARGS</h1>
+    <p class="login-sub">School Management &amp; POS System</p>
+    <p class="login-sub2">Nursery to Matric</p>
+    <form id="loginForm" autocomplete="off">
+      <div class="login-field">
+        <span class="lf-ico">👤</span>
+        <input type="text" id="loginUser" placeholder="Username / Login ID" required>
+      </div>
+      <div class="login-field">
+        <span class="lf-ico">🔒</span>
+        <input type="password" id="loginPass" placeholder="Password" required>
+        <button type="button" class="eye" id="togglePass" title="Show / Hide">👁️</button>
+      </div>
+      <button type="submit" class="btn login-btn">🔐 LOGIN</button>
+    </form>
+    <div class="login-hint">Default login: <b>admin</b> / <b>admin123</b> &nbsp;(Settings me se change karein)</div>
+    <div class="login-copy">© <span id="loginYear"></span> ARGS School</div>
+  </div>
+</div>
+
+<!-- ================= MAIN APP ================= -->
+<div class="app hidden" id="app">
+
+  <!-- LEFT SIDEBAR WITH 3D ICONS -->
+  <aside class="sidebar">
+    <div class="side-logo">
+      <span class="logo-tile">🏫</span>
+      <div class="logo-text"><b>ARGS</b><small>School POS</small></div>
+    </div>
+    <nav class="side-nav">
+      <button class="nav-item active" data-page="dashboard"    style="--c1:#667eea;--c2:#764ba2"><span class="nav-ico">📊</span><span class="nav-label">Dashboard</span></button>
+      <button class="nav-item" data-page="students"    style="--c1:#ff9966;--c2:#ff5e62"><span class="nav-ico">🎓</span><span class="nav-label">Students</span></button>
+      <button class="nav-item" data-page="attendance"   style="--c1:#11998e;--c2:#38ef7d"><span class="nav-ico">✅</span><span class="nav-label">Attendance</span></button>
+      <button class="nav-item" data-page="results"      style="--c1:#ee0979;--c2:#ff6a00"><span class="nav-ico">🏆</span><span class="nav-label">Results</span></button>
+      <button class="nav-item" data-page="invoices"    style="--c1:#00c6ff;--c2:#0072ff"><span class="nav-ico">🧾</span><span class="nav-label">Invoices</span></button>
+      <button class="nav-item" data-page="expenses"     style="--c1:#cb2d3e;--c2:#ef473a"><span class="nav-ico">💸</span><span class="nav-label">Expenses</span></button>
+      <button class="nav-item" data-page="staff"       style="--c1:#6a11cb;--c2:#2575fc"><span class="nav-ico">👨‍🏫</span><span class="nav-label">Staff</span></button>
+      <button class="nav-item" data-page="settings"    style="--c1:#757f9a;--c2:#b8c6db"><span class="nav-ico">⚙️</span><span class="nav-label">Settings</span></button>
+      <button class="nav-item" data-page="backup"      style="--c1:#ffd200;--c2:#f7971e"><span class="nav-ico">💾</span><span class="nav-label">Backup</span></button>
+    </nav>
+    <div class="side-bottom">
+      <div class="user-chip"><span class="u-ava">👤</span><span id="userName">Administrator</span></div>
+      <button class="nav-item logout" id="btnLogout"><span class="nav-ico">🚪</span><span class="nav-label">Logout</span></button>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-left"><span id="pageIcon" class="tb-ico">📊</span><h2 id="pageTitle">Dashboard</h2></div>
+      <div class="tb-right"><span id="todayDateTop" class="tb-date"></span></div>
+    </header>
+
+    <main class="content">
+
+      <!-- ============ DASHBOARD ============ -->
+      <section class="page active" id="page-dashboard">
+        <div class="welcome-bar" id="dashGreeting"></div>
+        <div class="cards-grid" id="statCards"></div>
+        <div class="dash-grid">
+          <div class="panel"><h3 class="p-title">🎓 Students per Class</h3><div class="bar-chart" id="chartStudents"></div></div>
+          <div class="panel"><h3 class="p-title">💰 Collection vs Expenses (6 Months)</h3><div id="chartFinance"></div></div>
+        </div>
+        <div class="dash-grid dash-grid2">
+          <div class="panel"><h3 class="p-title">🧾 Recent Invoices</h3><div id="recentInvoices"></div></div>
+          <div class="panel"><h3 class="p-title">💸 Recent Expenses</h3><div id="recentExpenses"></div></div>
+        </div>
+        <div class="panel qa-panel">
+          <h3 class="p-title">⚡ Quick Actions</h3>
+          <div class="qa-row">
+            <button class="qa-btn qa1" id="qaEnroll">➕ Enroll Student</button>
+            <button class="qa-btn qa2" id="qaAtt">✅ Take Attendance</button>
+            <button class="qa-btn qa3" id="qaInv">🧾 Generate Invoices</button>
+            <button class="qa-btn qa4" id="qaExp">💸 Add Expense</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ STUDENTS ============ -->
+      <section class="page" id="page-students">
+        <div class="page-head">
+          <h2>🎓 Students / Enrollment</h2>
+          <button class="btn primary" id="btnAddStudent">➕ Enroll New Student</button>
+        </div>
+        <div class="panel filters">
+          <select id="stuClassFilter"></select>
+          <input type="search" id="stuSearch" placeholder="🔍 Search by name, father, roll no, phone...">
+          <span class="count-chip" id="stuCount"></span>
+        </div>
+        <div class="panel table-wrap">
+          <table>
+            <thead><tr><th>Roll</th><th>Student Name</th><th>Father Name</th><th>Class</th><th>Gender</th><th>Monthly Fee</th><th>Phone</th><th>Admission</th><th>Actions</th></tr></thead>
+            <tbody id="studentsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ ATTENDANCE ============ -->
+      <section class="page" id="page-attendance">
+        <div class="page-head"><h2>✅ Attendance</h2></div>
+        <div class="panel filters">
+          <label class="f-label">Date</label><input type="date" id="attDate">
+          <label class="f-label">Class</label><select id="attClass"></select>
+          <button class="btn success" id="btnAllPresent">👍 All Present</button>
+          <button class="btn primary" id="attSaveBtn">💾 Save Attendance</button>
+        </div>
+        <div class="panel"><div id="attList"></div></div>
+        <div class="panel">
+          <h3 class="p-title">📅 Monthly Attendance Summary</h3>
+          <div class="filters"><label class="f-label">Month</label><input type="month" id="attMonth"><label class="f-label">Class</label><select id="attSumClass"></select></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Roll</th><th>Student</th><th>Present ✔</th><th>Absent ✖</th><th>Leave ⏸</th><th>Percentage</th></tr></thead>
+            <tbody id="attSummaryBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- ============ RESULTS ============ -->
+      <section class="page" id="page-results">
+        <div class="page-head"><h2>🏆 Results / Report Cards</h2></div>
+        <div class="panel">
+          <div class="filters">
+            <label class="f-label">Class</label><select id="resClass"></select>
+            <label class="f-label">Student</label><select id="resStudent"></select>
+            <label class="f-label">Exam</label><select id="resExam"></select>
+          </div>
+          <div id="marksWrap" class="marks-wrap"></div>
+          <div class="res-preview" id="resPreview"></div>
+          <div class="form-actions">
+            <button class="btn success" id="resSaveBtn">💾 Save Result</button>
+            <button class="btn ghost" id="resPrintBtn">🖨️ Print Report Card</button>
+          </div>
+        </div>
+        <div class="panel table-wrap">
+          <h3 class="p-title">📋 Saved Results</h3>
+          <table>
+            <thead><tr><th>Student</th><th>Class</th><th>Exam</th><th>Marks</th><th>%</th><th>Grade</th><th>Actions</th></tr></thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ INVOICES ============ -->
+      <section class="page" id="page-invoices">
+        <div class="page-head"><h2>🧾 Fee Invoices</h2></div>
+        <div class="panel gen-panel">
+          <h3 class="p-title">⚡ Generate Monthly Fee Invoices</h3>
+          <div class="filters">
+            <label class="f-label">Month</label><input type="month" id="genMonth">
+            <label class="f-label">Class</label><select id="genClass"></select>
+            <button class="btn primary" id="genBtn">🧾 Generate</button>
+          </div>
+        </div>
+        <div class="panel filters">
+          <input type="search" id="invSearch" placeholder="🔍 Search student / invoice #...">
+          <select id="invMonthFilter"></select>
+          <select id="invClassFilter"></select>
+          <select id="invStatusFilter">
+            <option value="All">All Status</option>
+            <option value="Paid">Paid</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
+        </div>
+        <div class="chips-row" id="invSummary"></div>
+        <div class="panel table-wrap">
+          <table>
+            <thead><tr><th>Invoice #</th><th>Student</th><th>Class</th><th>Month</th><th>Amount</th><th>Status</th><th>Issued</th><th>Paid On</th><th>Actions</th></tr></thead>
+            <tbody id="invoicesBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ EXPENSES ============ -->
+      <section class="page" id="page-expenses">
+        <div class="page-head"><h2>💸 Expenses</h2></div>
+        <div class="panel">
+          <h3 class="p-title">➕ Add Expense</h3>
+          <form id="expForm" class="filters wrap-form">
+            <input type="text" name="title" placeholder="Expense title (e.g. Electricity Bill)" required>
+            <select name="category" id="expCat"></select>
+            <input type="number" name="amount" placeholder="Amount (Rs)" min="1" required>
+            <input type="date" name="date" id="expDate" required>
+            <input type="text" name="note" placeholder="Note (optional)">
+            <button type="submit" class="btn danger">➕ Add</button>
+          </form>
+        </div>
+        <div class="chips-row"><span class="chip c-amber" id="expMonthChip"></span><span class="chip c-blue" id="expAllChip"></span></div>
+        <div class="panel table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Title</th><th>Category</th><th>Note</th><th>Amount</th><th>Actions</th></tr></thead>
+            <tbody id="expensesBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ STAFF ============ -->
+      <section class="page" id="page-staff">
+        <div class="page-head">
+          <h2>👨‍🏫 Staff Management</h2>
+          <button class="btn primary" id="btnAddStaff">➕ Add Staff</button>
+        </div>
+        <div class="chips-row"><span class="chip c-purple" id="staffCountChip"></span><span class="chip c-green" id="staffSalaryChip"></span></div>
+        <div class="panel table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Designation</th><th>Phone</th><th>CNIC</th><th>Salary</th><th>Join Date</th><th>Address</th><th>Actions</th></tr></thead>
+            <tbody id="staffBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ SETTINGS ============ -->
+      <section class="page" id="page-settings">
+        <div class="page-head"><h2>⚙️ Settings</h2></div>
+        <div class="panel">
+          <h3 class="p-title">🏫 School Information</h3>
+          <form id="schoolForm" class="form-grid">
+            <div class="form-group"><label>School Name</label><input name="schoolName" id="setSchoolName" required></div>
+            <div class="form-group"><label>Tagline</label><input name="tagline" id="setTagline"></div>
+            <div class="form-group"><label>Address</label><input name="address" id="setAddress"></div>
+            <div class="form-group"><label>Phone</label><input name="phone" id="setPhone"></div>
+            <div class="form-group"><label>Principal Name</label><input name="principal" id="setPrincipal"></div>
+            <div class="form-group"><label>Session (e.g. 2026-27)</label><input name="session" id="setSession" required></div>
+            <div class="form-actions"><button type="submit" class="btn primary">💾 Save School Info</button></div>
+          </form>
+        </div>
+        <div class="panel">
+          <h3 class="p-title">💰 Monthly Fee Structure (per Class)</h3>
+          <div class="fee-grid" id="feeGrid"></div>
+          <div class="form-actions"><button class="btn success" id="btnSaveFees">💾 Save Fee Structure</button></div>
+        </div>
+        <div class="panel">
+          <h3 class="p-title">🔑 Change Admin Password</h3>
+          <form id="passForm" class="form-grid">
+            <div class="form-group"><label>Current Password</label><input type="password" name="current" required></div>
+            <div class="form-group"><label>New Password</label><input type="password" name="newp" required minlength="4"></div>
+            <div class="form-group"><label>Confirm New Password</label><input type="password" name="confirm" required minlength="4"></div>
+            <div class="form-actions"><button type="submit" class="btn warn">🔑 Update Password</button></div>
+          </form>
+        </div>
+        <div class="panel danger-zone">
+          <h3 class="p-title">⚠️ Danger Zone</h3>
+          <div class="form-actions">
+            <button class="btn ghost" id="btnDemo">📦 Load Demo Data</button>
+            <button class="btn danger" id="btnClearAll">🗑️ Clear All Data</button>
+          </div>
+          <p class="muted">Clear All Data sab students, fees, results, attendance mita dega (school settings reh jayengi). Pehle Backup lena na bhoolein!</p>
+        </div>
+      </section>
+
+      <!-- ============ BACKUP ============ -->
+      <section class="page" id="page-backup">
+        <div class="page-head"><h2>💾 Backup &amp; Restore</h2></div>
+        <div class="dash-grid">
+          <div class="panel bk-card">
+            <div class="bk-ico">⬇️</div>
+            <h3 class="p-title">Export Backup</h3>
+            <p class="muted">Poora data (students, fees, results, staff, expenses...) ek JSON file me download karein. Usay mehfooz rakhein.</p>
+            <button class="btn primary" id="btnExport">⬇️ Download Backup File</button>
+          </div>
+          <div class="panel bk-card">
+            <div class="bk-ico">⬆️</div>
+            <h3 class="p-title">Import / Restore</h3>
+            <p class="muted">Pehle liya hua backup file yahan restore karein. Current data replace ho jayega.</p>
+            <input type="file" id="importFile" accept=".json,application/json">
+          </div>
+        </div>
+        <div class="panel">
+          <h3 class="p-title">📦 Current Data Summary</h3>
+          <div class="cards-grid small" id="bkStats"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modalTitle"></h3><button class="modal-x" id="modalClose">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- PRINT AREA -->
+<div id="printArea"></div>
+
+<script src="js/core.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/students.js"></script>
+<script src="js/attendance.js"></script>
+<script src="js/results.js"></script>
+<script src="js/invoices.js"></script>
+<script src="js/expenses.js"></script>
+<script src="js/staff.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/init.js"></script>
+</body>
+</html>
